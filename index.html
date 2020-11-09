@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js"> <!--<![endif]-->
+    <head onload="mat()">
+            <link rel='icon' href="favicon3.png">
+               <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+
+<script>
+	$(window).load(function() {
+		// Animate loader off screen
+		$(".se-pre-con").delay(400).fadeOut();
+	}); 
+  </script>
+                    <div class="se-pre-con"></div>
+        <style>
+                 .no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(favicon3.png) center no-repeat #fff;
+}
+        </style>
+        <meta charset="UTF-8" />
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
+        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Login and Registration Form with HTML5 and CSS3" />
+        <meta name="keywords" content="html5, css3, form, switch, animation, :target, pseudo-class" />
+        <meta name="author" content="Codrops" />
+        <meta name="google-signin-client_id" content="718349463400-sssaue94s8ebo5t3rblckim2b5ot8eck.apps.googleusercontent.com">
+        <link rel="shortcut icon" href="../favicon.ico"> 
+        <link rel="stylesheet" type="text/css" href="demo.css" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="animate-custom.css" />
+            <link rel='icon' href="favicon3.png" >
+    </head>
+      <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+           
+        var config = {
+    apiKey: "AIzaSyCrJG05oits2Jm8DwxiQ_l6kNJ0HHr3T_w",
+    authDomain: "test-5ef88.firebaseapp.com",
+    databaseURL: "https://test-5ef88.firebaseio.com",
+    projectId: "test-5ef88",
+    storageBucket: "test-5ef88.appspot.com",
+    messagingSenderId: "718349463400"
+  };
+        firebase.initializeApp(config);
+                
+        // Check to see if you are logged in
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user == null) {
+                return;
+            } else {
+                window.location.replace('text.html');
+
+                userId = user.uid;
+                name = user.displayName;
+                imageUrl = user.photoURL;
+                email = user.email;
+                    
+                // write user data to users
+                writeUserData(userId, name, email, imageUrl);
+                
+                // write data to document
+                mydiv = document.getElementById("mydata");
+                mydiv.innerHTML = name;
+                myphotodiv = document.getElementById("myphoto");
+                myphotodiv.innerHTML = "<img src='" + imageUrl + "'/>";
+
+                firebase.database().ref('/tweets/' + userId).once('value').then(function(snapshot) {
+                    var data = (snapshot.val());
+                    if (data == null) {
+                      console.log("No data found at /tweets");  
+                    } else {
+                      updatetweets(data);
+                    }
+                });
+            } // end user null check
+        }); // end check auth state
+        
+        function writeUserData(userId, name, email, imageUrl) {
+            firebase.database().ref('users/' + userId).set({
+                username: name,
+                email: email,
+                profile_picture : imageUrl
+            });
+        } 
+        
+        function updatetweets(data) {
+            console.log(data); 
+            var mylist = "<ul>";
+            for (var u in data) {
+                var d = new Date(data[u].time);
+                var t = d.toLocaleDateString;
+                mylist = mylist + "<li>" + data[u].tweet + "(" + t + ")</li>";
+            }
+            mylist = mylist + "</ul>";
+            var mytdiv = document.getElementById("mytweets");
+            mytdiv.innerHTML = mylist;
+        }
+        
+        // write tweets to firebase
+        function tweet() {
+            
+            twitdoc = document.getElementById("twit");
+            var nameValue = twitdoc.value;
+            var js_time = Date.now();
+            var imgValue = twitimg.innerHTML;
+            var tweetid = firebase.database().ref('tweets/' + userId + "/").push({tweet: nameValue, time: js_time, img: imgValue});
+            twitdoc.value = "";
+            console.log("tweet written")
+            
+            firebase.database().ref().once('value').then(function(snapshot) {
+                    var data = (snapshot.val());
+                    if (data == null) {
+                      console.log("No data found at /tweets");  
+                    } else {
+                      updatetweets(data);
+                    }
+                });
+            
+            // The unique key stored in tweetid is based on a timestamp, so list items will automatically be ordered chronologically. Because Firebase generates a unique key for each tweet, no write conflicts will occur if multiple users add a post at the same time. https://firebase.google.com/docs/database/admin/save-data
+            
+        }
+                function signin() {
+            console.log("Signing in");
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider).then(function(result){
+            });
+
+        }
+        
+        function signout() {
+            console.log("Signing out");
+            firebase.auth().signOut().then(function() {
+                window.location.href="index.html";
+            });
+        }
+    </script>
+    <body>
+                  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+
+            <div>
+    <div class="topnav">
+  <a class="active" href="index.html">Home</a>
+  <a href="contact.html">Contact Us</a>
+  <a href="about.html">About</a>
+           <a href="team.html">Meet Our Team</a>
+    <a href="videochat.html">Globecall</a>
+
+         <img id="myimage" src="favicon3.png">
+        </div>
+         </div>
+        <br>
+
+        <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <button class="close">Accept & Close</button>
+              <p style="width: 50%; margin-left: auto; margin-right: auto"><h1>Privacy Policy</h1>
+
+
+<p>Effective date: May 18, 2019</p>
+
+
+<p>GlobeBook operates the amzm.github.io/Globebook website.</p>
+
+<p>This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.</p>
+
+<p>We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, accessible from amzm.github.io/Globebook</p>
+
+
+<h2>Information Collection And Use</h2>
+
+<p>We collect several different types of information for various purposes to provide and improve our Service to you.</p>
+
+<h3>Types of Data Collected</h3>
+
+<h4>Personal Data</h4>
+
+<p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). Personally identifiable information may include, but is not limited to:</p>
+
+<ul>
+<li>Email address</li><li>First name and last name</li><li>Cookies and Usage Data</li>
+</ul>
+
+<h4>Usage Data</h4>
+
+<p>We may also collect information how the Service is accessed and used ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</p>
+
+<h4>Tracking & Cookies Data</h4>
+<p>We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.</p>
+<p>Cookies are files with small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Tracking technologies also used are beacons, tags, and scripts to collect and track information and to improve and analyze our Service.</p>
+<p>You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.</p>
+<p>Examples of Cookies we use:</p>
+<ul>
+    <li><strong>Session Cookies.</strong> We use Session Cookies to operate our Service.</li>
+    <li><strong>Preference Cookies.</strong> We use Preference Cookies to remember your preferences and various settings.</li>
+    <li><strong>Security Cookies.</strong> We use Security Cookies for security purposes.</li>
+</ul>
+
+<h2>Use of Data</h2>
+    
+<p>GlobeBook uses the collected data for various purposes:</p>    
+<ul>
+    <li>To provide and maintain the Service</li>
+    <li>To notify you about changes to our Service</li>
+    <li>To allow you to participate in interactive features of our Service when you choose to do so</li>
+    <li>To provide customer care and support</li>
+    <li>To provide analysis or valuable information so that we can improve the Service</li>
+    <li>To monitor the usage of the Service</li>
+    <li>To detect, prevent and address technical issues</li>
+</ul>
+
+<h2>Transfer Of Data</h2>
+<p>Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.</p>
+<p>If you are located outside Canada and choose to provide information to us, please note that we transfer the data, including Personal Data, to Canada and process it there.</p>
+<p>Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.</p>
+<p>GlobeBook will take all steps reasonably necessary to ensure that your data is treated securely and in accordance with this Privacy Policy and no transfer of your Personal Data will take place to an organization or a country unless there are adequate controls in place including the security of your data and other personal information.</p>
+
+<h2>Disclosure Of Data</h2>
+
+<h3>Legal Requirements</h3>
+<p>GlobeBook may disclose your Personal Data in the good faith belief that such action is necessary to:</p>
+<ul>
+    <li>To comply with a legal obligation</li>
+    <li>To protect and defend the rights or property of GlobeBook</li>
+    <li>To prevent or investigate possible wrongdoing in connection with the Service</li>
+    <li>To protect the personal safety of users of the Service or the public</li>
+    <li>To protect against legal liability</li>
+</ul>
+
+<h2>Security Of Data</h2>
+<p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
+
+<h2>Service Providers</h2>
+<p>We may employ third party companies and individuals to facilitate our Service ("Service Providers"), to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used.</p>
+<p>These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
+
+
+
+<h2>Links To Other Sites</h2>
+<p>Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit.</p>
+<p>We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
+
+
+<h2>Children's Privacy</h2>
+<p>Our Service does not address anyone under the age of 18 ("Children").</p>
+<p>We do not knowingly collect personally identifiable information from anyone under the age of 18. If you are a parent or guardian and you are aware that your Children has provided us with Personal Data, please contact us. If we become aware that we have collected Personal Data from children without verification of parental consent, we take steps to remove that information from our servers.</p>
+
+
+<h2>Changes To This Privacy Policy</h2>
+<p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+<p>We will let you know via email and/or a prominent notice on our Service, prior to the change becoming effective and update the "effective date" at the top of this Privacy Policy.</p>
+<p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+
+
+<h2>Contact Us</h2>
+<p>If you have any questions about this Privacy Policy, please contact us:</p>
+<ul>
+        <li>By email: a.modaressanavi@ucc.on.ca</li>
+            <li>By visiting this page on our website: amzm.github.io/Globebook/contact</li>
+      
+        </ul>
+      <br>
+      <p style="font-family: cursive; font-size: 40px; margin-left: 160px;"><b><i>"Reality is Wrong. Dreams are real with GlobeBook"</i></b></p>
+      <p style="font-family: serif; font-size: 28px; margin-left: 380px;">-Amir Modares, GlobeBook CEO</p>
+  </div>
+        </div>
+        <div class="container">
+            <!-- Codrops top bar --> 
+            <header>
+                <h1>Login</h1>
+            </header>
+            <script>
+
+            </script>
+            <section>				
+                <div id="container_demo" >
+                    <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
+                    <a class="hiddenanchor" id="toregister"></a>
+                    <a class="hiddenanchor" id="tologin"></a>
+                    <div id="wrapper">
+                        <center>
+                            <div id="my-signin2" onclick="signin()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="google.png"><center><p style="font-family: sans-serif; padding-top: 12.5px; color: black">Sign in with Google</p></center></div>
+                        <br>
+                        <div id="my-signin4" onclick="login()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="GitHub-Mark-64px.png"><center><p style="font-family: sans-serif; padding-top: 12.5px;">Sign in with GitHub</p></center></div> 
+                            <br>
+                            
+                            <div id="my-signin5" onclick="login2()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="yahoo.jpg"><center><p style="font-family: sans-serif; padding-top: 12.5px;">Sign in with Yahoo</p></center></div>
+                            <br>
+                            <div id="my-signin6" onclick="login3()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="facebook.png"><center><p style="font-family: sans-serif; padding-top: 12.5px;">Sign in with FaceBook</p></center></div> 
+                            <br>
+                            <div id="my-signin7" onclick="login4()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="twitterr.png"><center><p style="font-family: sans-serif; padding-top: 12.5px;">Sign in with Twitter</p></center></div> 
+                            <p class="login button"></p>
+                            <div id="my-signin8" onclick="login5()"><img style="float: left; width: 45px; height: 45px; background-color: white" src="user.png"><center><p style="font-family: sans-serif; padding-top: 12.5px;">Sign in as Guest</p></center></div> 
+                            <p class="login button"></p>
+                                    <p style="color: grey; font-size: 10px">Ads</p>
+                            <a href="https://www.here.com/products/traffic-solutions/real-time-traffic-information">
+                                <center><img  style="width:600px; height: 80px" src="Screen%20Shot%202019-04-18%20at%201.57.22%20PM.png"></center></a>
+                                
+                                                </center>
+
+                    </div>
+                        </div>
+            </section>
+            
+    <style>
+    img {
+    height: 30px;
+        width: 30px;
+        float: left;
+    }
+        #mydata {
+         left: 35px;
+        }
+        </style>
+        <div id="footerdiv">
+        <table style="width: 900px; height: 150px"><tr>
+                <td><a href="index.html"><p style="font-family: sans-serif; font-size:18px; color: white">Home</p></a></td>
+        <td><a href="about.html"><p style="font-family: sans-serif; font-size:18px; color: white">About</p></a></td>
+       <td><a href="contact.html"><p style="font-family: sans-serif; font-size:18px; color: white">Contact us</p></a></td>
+            </tr>
+               <tr> <td><a href="events.html"><p style="font-family: sans-serif; font-size:18px; color: white">Events</p></a></td>
+        <td><a href="subscribe.html"><p style="font-family: sans-serif; font-size:18px; color: white">Subscribe</p></a></td><td><a href="videochat.html"><p style="font-family: sans-serif; font-size:18px; color: white">Globecall</p></a></td></tr>
+            </table>
+       <a href="https://www.instagram.com/itsthemds"><img class="media" src="insta.png"></a><a href="https://www.twitter.com/mzheng555"><img class="media" src="twitter.png"></a><a href="https://www.facebook.com/amirreza.modarres"><img class="media" src="face.png"></a><a href="https://www.linkedin.com/in/michael-zheng-8b360b152"><img class="media" src="linked.png"></a>
+        <div style="width: 33%; float:right">
+        <form name="Email" method="post" action="email.php">
+    <input style="margin-top: -125px; margin-left: auto" type="text" name="Email" maxlength="80" size="30" placeholder="Your Email...">
+     <input style="margin-top: -50px; margin-right:auto" type="submit" value="Subscribe">
+        </form>
+            </div>
+    <footer style="color: white">Copyright © WLW, AMZM</footer>
+
+
+        </div>
+            <script>
+        function login() {
+            console.log("Signing in");
+            var provider = new firebase.auth.GithubAuthProvider();
+            firebase.auth().signInWithRedirect(provider);
+            firebase.auth().getRedirectResult().then(function(result) {
+  if (result.credential) {
+    // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+    var token = result.credential.accessToken;
+    // ...
+  }
+  // The signed-in user info.
+  var user = result.user;
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+    var credential = firebase.auth.GithubAuthProvider.credential(token);
+                firebase.auth().signInAndRetrieveDataWithCredential(credential).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+                
+                });
+        }
+                
+        function login2() {
+            console.log("Signing in");
+var provider = new firebase.auth.OAuthProvider('yahoo.com');
+firebase.auth().signInWithRedirect(provider);
+
+
+firebase.auth().getRedirectResult()
+  .then(function(result) {
+    result.credential.idToken
+    window.location.replace('text.html');
+  })
+  .catch(function(error) {
+    // Handle error.
+  });
+        }
+            </script>
+            <script>
+            function login3() {
+                            console.log("Signing in");
+                var provider = new firebase.auth.FacebookAuthProvider();
+                firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  // ...
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+                firebase.auth().signInWithRedirect(provider);
+firebase.auth().getRedirectResult().then(function(result) {
+  if (result.credential) {
+    // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+    var token = result.credential.accessToken;
+    // ...
+  }
+  // The signed-in user info.
+  var user = result.user;
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+                                window.location.href="text.html";
+            }
+            </script>
+            <script>
+            function login4() {
+                var provider = new firebase.auth.TwitterAuthProvider();
+firebase.auth().signInWithPopup(provider).then(function(result) {
+  // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+  // You can use these server side with your app's credentials to access the Twitter API.
+  var token = result.credential.accessToken;
+  var secret = result.credential.secret;
+  // The signed-in user info.
+  var user = result.user;
+  // ...
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+                firebase.auth().signInWithRedirect(provider);
+firebase.auth().getRedirectResult().then(function(result) {
+  if (result.credential) {
+    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+    // You can use these server side with your app's credentials to access the Twitter API.
+    var token = result.credential.accessToken;
+    var secret = result.credential.secret;
+    // ...
+  }
+  // The signed-in user info.
+  var user = result.user;
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+            }
+            </script>
+            <script>
+            function login5() {
+                firebase.auth().signInAnonymously().catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
+                firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    var isAnonymous = user.isAnonymous;
+    var uid = user.uid;
+    // ...
+  } else {
+    // User is signed out.
+    // ...
+  }
+  // ...
+});
+            }
+
+            </script>
+            <script>
+                $(document).ready(function() {
+                            var modal = document.getElementById("myModal");
+ modal.style.display = "block";
+// Get the button that opens the modal
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+  modal.style.display = "none";
+}
+// When the user clicks on the button, open the modal 
+ 
+
+// When the user clicks on <span> (x), close the modal
+                	});
+
+            </script>
+            
+    <style>
+        
+        #send{
+            border-radius: 10px;
+            border-color: white;
+            font-size: 15px;
+        }
+        #send:hover {
+            background-color: aliceblue;
+            border-left: 2px solid black;
+            border-radius: 10px;
+        }
+        .topnav {
+    list-style-type: none;
+  background-color: navy;
+font-family:sans-serif;
+    text-align: center;
+position: relative;
+    overflow: hidden;
+}
+
+.topnav a {
+  float: left;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 18px;
+    color: white;
+    background-color: navy;
+}
+
+.topnav a:hover {
+color: gainsboro;
+}
+
+.topnav a.active {
+  background-color: dodgerblue;
+}
+  .topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+}
+            #myimage {
+            float: right;
+            object-position: top;
+                height: 50px;
+                width: 50px;
+        }
+         input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+                #footerdiv {
+            height: 250px;
+            background-color: navy;
+             left: 0;
+  bottom: 0;
+  width: 100%;
+        margin-left: auto;
+                    margin-right: auto;
+        }
+        .media {
+            height: 40px;
+            width: 40px;
+        }
+        #my-signin4 {
+            width: 240px;
+            background-color: #333;
+            height: 45px;
+            font-size: 16px;
+            color: white;
+            border: 1px solid grey;
+            cursor: pointer;
+        }
+        #my-signin2 {
+            width: 240px;
+            background-color: white;
+            height: 45px;
+            font-size: 16px;
+            color: white;
+            border: 1px solid grey;
+                        cursor: pointer;
+
+        }
+            #my-signin5 {
+            width: 240px;
+            background-color: rebeccapurple;
+            height: 45px;
+            font-size: 16px;
+            color: rosybrown;
+            border: 1px solid grey;
+            cursor: pointer;
+        }
+                    #my-signin6 {
+            width: 240px;
+            background-color: darkblue;
+            height: 45px;
+            font-size: 16px;
+            color: burlywood;
+            border: 1px solid grey;
+            cursor: pointer;
+        }
+                            #my-signin7 {
+            width: 240px;
+            background-color: lightblue;
+            height: 45px;
+            font-size: 16px;
+            color: white;
+            border: 1px solid grey;
+            cursor: pointer;
+        }
+                                    #my-signin8 {
+            width: 240px;
+            background-color: grey;
+            height: 45px;
+            font-size: 16px;
+            color: white;
+            border: 1px solid grey;
+            cursor: pointer;
+        }
+        .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+    height: 100%;
+    overflow: scroll;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+    </style>
+        </div>
+    </body>
+</html>
