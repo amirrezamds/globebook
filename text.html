@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+        <link rel='icon' href="favicon3.png" >
+          <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.7/firebase.js"></script>
+        <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+     <body>
+        
+            <div class="se-pre-con"></div>
+         
+
+ <div class="topnav">
+  <a class="active" href="index.html">Home</a>
+  <a href="contact.html">Contact Us</a>
+  <a href="about.html">About</a>
+  <a href="team.html">Meet Our Team</a>
+  <a href="videochat.html">Globecall</a>
+  <a style="float: right" onclick="signout()">Sign Out</a>
+
+
+         <div id="myimage"></div>
+     <div id="hell"><p id="mya"></p></div>
+        </div>
+        <div class="container">
+                <div>
+            
+<input id="inputFileToLoad" type="file" onchange="encodeImageFileAsURL()" style="visibility: hidden">
+                </div>
+              <div id="imgTest" style="display:none;"></div>
+    <div id="mytweets"></div>
+    <div id="mydata"></div>
+    <div id="myphoto"></div>
+
+  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <style>
+
+        #mydata {
+         left: 35px;
+        }
+        </style>
+            <form style="left: 5; bottom: 0; margin-left: 10px">
+            <textarea placeholder="Write Your Message" id="twit" type="text" name="thetweet" cols="100" rows="4"></textarea>
+        </form> 
+        <button id="send" type="button" onclick="tweet()">Globe It!</button>
+            <input id="inputFileToLoad2" type="file" onchange="encodeImageFileAsURL2();" />
+        <div id="imgTest" style="display:none;"></div>
+            
+            
+            
+           <center>
+               <div id="myds" style="background-color: azure; height: 550px; width: 250px; border-radius: 7%">
+                   <br>
+                   
+                   <div id="imaye"></div>
+               <label for="inputFileToLoad" style="border-color: black; border: 2px; background-color: azure; cursor: pointer">Change Profile Picture</label>
+                   <br>
+                   <br>
+        <div class="audio-player">
+            <button class="play"><i class="ion-play"></i></button>
+            <div class="seek-bar">
+                <div class="fill"></div>
+                <div class="handle"></div>
+            </div>
+        </div>
+
+        <script src="music-player.js"></script>
+<textarea id="mytextarea" placeholder="New Username..."></textarea>
+                    <button style="border-color: black; border: 2px; background-color: azure; cursor: pointer; font-size: 16px; font-family: serif; color: black" onclick="username()">Change Username</button>
+                   <div id="bio">
+                       <textarea id="mytextarea2" placeholder="Hobbies, Sports, Interests, etc" style="height: 100px;"></textarea>
+                       <button style="border-color: black; border: 2px; background-color: azure; cursor: pointer; font-size: 16px; font-family: serif; color: black" onclick="bio()">Update Your Bio</button>
+                       <p id="status"></p>
+</div>
+                   <div id="bio2"></div>
+               </div>
+            </center>
+         </div>
+    </body>
+<br>
+
+        <div id="footerdiv">
+        <table style="width: 900px; height: 150px"><tr>
+                <td><a href="index.html"><p style="font-family: sans-serif; font-size:18px; color: white">Home</p></a></td>
+        <td><a href="about.html"><p style="font-family: sans-serif; font-size:18px; color: white">About</p></a></td>
+       <td><a href="contact.html"><p style="font-family: sans-serif; font-size:18px; color: white">Contact us</p></a></td>
+            </tr>
+               <tr> <td><a href="events.html"><p style="font-family: sans-serif; font-size:18px; color: white">Events</p></a></td>
+        <td><a href="subscribe.html"><p style="font-family: sans-serif; font-size:18px; color: white">Subscribe</p></a></td><td><a href="videochat.html"><p style="font-family: sans-serif; font-size:18px; color: white">Globecall</p></a></td></tr>
+            </table>
+      <a href="https://www.instagram.com/itsthemds"><img class="media" src="insta.png"></a><a href="https://www.twitter.com/mzheng555"><img class="media" src="twitter.png"></a><a href="https://www.facebook.com/amirreza.modarres"><img class="media" src="face.png"></a><a href="https://www.linkedin.com/in/michael-zheng-8b360b152"><img class="media" src="linked.png"></a>
+                    <div style="width: 33%; float:right">
+        <form name="Email" method="post" action="email.php">
+    <input style="margin-top: -125px; margin-left: auto" type="text" name="Email" maxlength="80" size="30" placeholder="Your Email...">
+     <input style="margin-top: -50px; margin-right:auto" type="submit" value="Subscribe">
+        </form>
+            </div>
+    <footer style="color: white">Copyright GlobeBook, AMZM</footer>
+
+        </div>
+        <script>
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCrJG05oits2Jm8DwxiQ_l6kNJ0HHr3T_w",
+    authDomain: "test-5ef88.firebaseapp.com",
+    databaseURL: "https://test-5ef88.firebaseio.com",
+    projectId: "test-5ef88",
+    storageBucket: "test-5ef88.appspot.com",
+    messagingSenderId: "718349463400"
+  };
+
+        firebase.initializeApp(config);
+                        function encodeImageFileAsURL() {
+                 var filesSelected = document.getElementById("inputFileToLoad").files;
+            if (filesSelected.length > 0) {
+                var fileToLoad = filesSelected[0];
+                var fileReader = new FileReader();
+                fileReader.onload = function(fileLoadedEvent) {
+                    var srcData = fileLoadedEvent.target.result; // <--- data: base64
+                    firebase.database().ref('/users/' + userId).update({profileImg: srcData});
+                    firebase.database().ref('/users/' + userId + '/profileImg').once('value').then(function(snapshot) {
+                    var prof = (snapshot.val());
+                    document.getElementById("myimage").innerHTML = "<img src = '" + prof + "' style='height: 50px; width: 50px'>";
+                    document.getElementById("myphoto").innerHTML = "<img src = '" + prof + "' style='vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;'>";
+                    document.getElementById("imaye").innerHTML = "<img src = '" + prof + "'  style='vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;'>";
+                    });
+                    //newImage.src = srcData;
+                    //document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+                    //document.getElementById("myphoto").innerHTML = srcData;
+                    //console.log("Converted Base64 version is: " + document.getElementById("imgTest").innerHTML);
+                    console.log(srcData);
+                }
+                fileReader.readAsDataURL(fileToLoad);
+                //var imgWanted document.getElementById("myphoto").value;
+            }
+        }
+            
+        // Check to see if you are logged in
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user == null) {
+                alert("Signing Out Successful");
+                return;
+            } else {
+                userId = user.uid;
+                myname = user.displayName;
+                imageUrl = user.photoURL;
+                email = user.email;
+
+                writeUserData();
+                // write user data to users
+                // write data to document
+                firebase.database().ref('/users/' + userId + '/profileImg').once('value').then(function(snapshot) {
+                var prof = (snapshot.val());
+                firebase.database().ref('/users/' + userId + '/username').once('value').then(function(snapshot) {
+                var userii = (snapshot.val());
+                mydiv = document.getElementById("mydata");
+                mydiv.innerHTML = userii;
+                myphotodiv = document.getElementById("myphoto");
+                myimagediv = document.getElementById("myimage");
+                imayediv = document.getElementById("imaye");
+                myphotodiv.innerHTML = "<img alt='Your Profile Picture' src='" + prof + "' style='vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;'>";
+                myimagediv.innerHTML = "<img alt='Your Profile Picture' src='" + prof +"' style='height: 50px; width: 50px'>";
+                imayediv.innerHTML = "<img alt='Your Profile Picture' src='" + prof + "' style='vertical-align: middle; width: 50px; height: 50px; border-radius: 50%;'>";
+
+});
+                    });
+
+               firebase.database().ref('/tweets/' + userId).once('value').then(function(snapshot) {
+                    var data = (snapshot.val());
+                      updatetweets(data);
+                });
+            } // end user null check
+        }); // end check auth state
+
+function writeUserData() {
+    var amOnline = new Firebase('https://test-5ef88.firebaseio.com/.info/connected');
+var userRef = new Firebase('https://test-5ef88.firebaseio.com/users/' + userId + '/presence/');
+var userRef2 =  new Firebase('https://test-5ef88.firebaseio.com/users/' + userId + '/status/');
+
+            firebase.database().ref('users/' + userId).once('value', function(snapshot) {
+ if (!snapshot.exists()) {
+                    firebase.database().ref('users/' + userId).set({
+                        username: myname,
+                        email: email,
+                        profileImg : imageUrl,
+                        bio: "",
+                        
+                    }); 
+                 }                                      
+            });
+amOnline.on('value', function(snapshot) {
+  if (snapshot.val()) {
+    userRef.onDisconnect().set('offline');
+    userRef2.onDisconnect().set(Firebase.ServerValue.TIMESTAMP);
+                   userRef.set('online');
+                   userRef2.set('now');
+
+window.onback = function () {
+  userRef.set('online');
+}
+  }
+});                                      
+    firebase.database().ref('/users/' + userId + '/username').once('value').then(function(snapshot) {
+                var userii = (snapshot.val());
+        document.getElementById("mya").innerHTML="Welcome " + userii + "!";
+        
+    });
+    firebase.database().ref('/users/' + userId + '/bio').once('value').then(function(snapshot) {
+               var biography = (snapshot.val());
+        document.getElementById("status").innerHTML="Bio: " + biography;
+        
+    });
+}
+        function updatetweets(data) {
+
+            var mytab = "<table>";
+            users = data[1]; // put on top, because changed data - not good coding change later
+            data = data[0];
+            for (var u in data) {
+                
+                    var myuser = users[u].username;
+                    var status = users[u].presence;
+                    var lastseen = users[u].status;
+                if (lastseen != "now") {
+                    var date2 = new Date(lastseen);
+                    var time2 = date2.toLocaleString();
+            } else {
+                var time2 = "Now";
+            }
+                         mytab = mytab + "<td style='color:green'> status: <b>" + status + "</b></td>";
+                         mytab = mytab + "<td  style='color:red'> Last Seen At: " + time2 + "</td>";
+
+                for (var t in data[u]) {
+                    mytab = mytab + "<tr>";
+                    var profile = document.querySelectorAll('#myphoto img')[0].src;
+                    var user1 = document.getElementById('mydata').innerHTML;
+                    var date = new Date(data[u][t].time);
+                    var time = date.toLocaleString();
+
+                        mytab = mytab + "<td><img src='" + users[u].profileImg + "' style='vertical-align: middle; width: 30px; height: 30px; border-radius: 50%;'></td>";
+                        mytab = mytab + "<td style='color:blue'>" + "Username: " + users[u].username + "</p></td>";
+                        mytab = mytab + "<td style='color:red'>" + "Message: " + data[u][t].tweet + "</td>";
+                        mytab = mytab + "<td style='color:brown'>" + "Time: " + time + "</td>";
+                        mytab = mytab + "<td><button id='" + t + " " + u + "' onclick='likeTweet(this.id)'><img style='float: left;height: 15px; width:15px'src='like.png'></button><span id='likes " + t + "'> "+ data[u][t].likes +"</span> Users Liked This<br></td>";
+                        mytab = mytab + "<td><span id='twit" + t + " " + u + "' onclick='Twit(this.id)' style='background: #fff;color: rgb(87, 207, 244);cursor: pointer;display: inline-block;padding: 1em 2em;-webkit-border-radius: 6px;border-radius: 6px;' class='twitter-share' data-js='twitter-share'>Share on Twitter</span><br><span  style='background: #fff;color: rgb(87, 207, 244);cursor: pointer;display: inline-block;padding: 1em 2em;-webkit-border-radius: 6px;border-radius: 6px;' id='face" + t + " " + u + "' onclick='Face(this.id)' class='facebook-share' data-js='facebook-share'>Share on Facebook</span><td>"
+                    if (data[u][t].img != "") {
+                        mytab = mytab + "<td><img style='width: 300px; height: 200px' src='" + data[u][t].img + "' ></td>";     
+                    }
+                    mytab = mytab + "</tr>";
+                }   
+            }
+            //mylist = mylist + "</ul>";
+                                        //firebase.database().ref('/users/' + users[u].username + /followers/).once('value').then(function(snapshot) {
+                   // var yes = (snapshot.val());
+                            //document.getElementById('mypr').innerHTML="Number of Followers: " + (yes);
+                                   // });
+            mytab = mytab + "</table>"
+            var mytdiv = document.getElementById("mytweets");
+            //mytdiv.innerHTML = mylist;
+            mytdiv.innerHTML = mytab;
+
+        }
+
+        // write tweets to firebase
+            function Twit(id) {
+                var twitspan = document.getElementById(id);
+                window.open('https://twitter.com/share?url=' + document.URL, 'twitter-popup', 'height=350,width=600');
+            }
+                        function Face(id) {
+                var facespan = document.getElementById(id);
+window.open('https://www.facebook.com/sharer/sharer.php?u=' + document.URL, 'facebook-popup', 'height=350,width=600');            }
+            
+            function likeTweet(id) {
+             var liketest = id;
+           var info = liketest.split(" ");
+        firebase.database().ref('likes/' + info[0] + "/" + userId).once('value', function(snapshot) {
+               var userswholiked = snapshot.val();
+           if(userswholiked == null) {
+                firebase.database().ref('tweets/' + info[1] + "/" + info[0]).once('value', function(snapshot) {
+             var tweetinfo = snapshot.val();
+             var newlikes = tweetinfo.likes;
+             newlikes++;
+                 firebase.database().ref('tweets/' + info[1] + "/" + info[0]).update({likes: newlikes});
+             var likeid = "likes " + info[0];
+        var likespan = document.getElementById(likeid);
+        likespan.innerHTML = newlikes;
+           });
+        firebase.database().ref('likes/' + info[0] + "/" + userId).once('value', function(snapshot) {
+               var userswholiked = snapshot.val();
+               if(userswholiked.userliked) {
+                   var changebuttoncolour = document.getElementById(id);
+        changebuttoncolour.style.backgroundColor="red";
+               }
+           });
+        
+        firebase.database().ref('likes/' + info[0] + "/" + userId).update({userliked:true});
+           }
+               else {
+                   alert("You cannot like a tweet more than once");
+                                      var changebuttoncolour = document.getElementById(id);
+        changebuttoncolour.style.backgroundColor="red";
+                    return;
+                 
+               }
+             
+           });
+       
+    }
+            
+        function tweet() {
+            
+            twitdoc = document.getElementById("twit");
+            var twitimg = document.getElementById("imgTest");
+            var nameValue = twitdoc.value;
+            var imgValue = twitimg.innerHTML;
+            var js_time = Date.now();
+            var tweetid = firebase.database().ref('/tweets/' + userId).push({tweet: nameValue, time: js_time, img: imgValue, likes: 0});
+            twitdoc.value = "";
+            console.log("tweet written");
+            
+                       firebase.database().ref('/tweets').once('value').then(function(snapshot) {
+                    var data = (snapshot.val());
+                    if (data == null) {
+                      console.log("No data found at /tweets/" + userId);  
+                    } else { 
+                            
+                        firebase.database().ref('/users').once('value').then(function(snapshot) { 
+                        var userdata = (snapshot.val());
+                        if (userdata != null) {
+                           dataarray = [data, userdata]
+                           console.log(dataarray);
+                           updatetweets(dataarray); 
+                        }
+                });
+            } // end user null check
+        }); // end check auth state
+        }
+        function signin() {
+            console.log("Signing in");
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider).then(function(result){
+            });
+
+        }
+        
+        function signout() {
+            console.log("Signing out");
+            firebase.auth().signOut().then(function() {
+                window.location.href="index.html";
+            });
+        }
+        function encodeImageFileAsURL2() {
+
+            var filesSelected = document.getElementById("inputFileToLoad2").files;
+            if (filesSelected.length > 0) {
+                var fileToLoad = filesSelected[0];
+                var fileReader = new FileReader();
+                fileReader.onload = function(fileLoadedEvent) {
+                    var srcData = fileLoadedEvent.target.result; // <--- data: base64
+                    //var newImage = document.createElement('img');
+                    //newImage.src = srcData;
+                    //document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+                    document.getElementById("imgTest").innerHTML = srcData;
+                    //console.log("Converted Base64 version is: " + document.getElementById("imgTest").innerHTML);
+                    console.log(srcData);
+                }
+                fileReader.readAsDataURL(fileToLoad);
+            }
+        } // end function
+
+function username() {
+    newuser = document.getElementById("mytextarea").value;
+           firebase.database().ref('/users/' + userId).update({username: newuser});
+    document.getElementById("mydata").innerHTML=newuser;
+    document.getElementById("mya").innerHTML="Welcome " + newuser + "!";
+}
+            function bio() {
+    newbio = document.getElementById("mytextarea2").value;
+            var bioid = firebase.database().ref('users/' + userId).update({bio: newbio});
+                document.getElementById("bio2").innerHTML="Bio: " + newbio;
+
+}
+    </script>
+    <style>
+        #mya {
+            float: right;
+            color: white;
+        }
+    #Profile {
+            border-radius: 10px;
+            border-color: white;
+            font-size: 15px;
+        }
+        #Profile:hover {
+            background-color: aliceblue;
+            border-left: 1px solid black;
+            border-radius: 10px;
+            border-right: 1px solid black;
+        }
+     #send{
+            border-radius: 10px;
+            border-color: white;
+            font-size: 15px;
+        }
+        #send:hover {
+            background-color: aliceblue;
+            border-left: 1px solid black;
+            border-radius: 10px;
+            border-right: 1px solid black;
+        }
+        .topnav {
+    list-style-type: none;
+  background-color: navy;
+font-family:sans-serif;
+    text-align: center;
+position: relative;
+    overflow: hidden;
+    height: 50px;
+}
+
+.topnav a {
+  float: left;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 18px;
+    color: white;
+    background-color: navy;
+}
+
+.topnav a:hover {
+color: gainsboro;
+}
+
+.topnav a.active {
+  background-color: dodgerblue;
+}
+  .topnav input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+}
+            #myimage {
+            float: right;
+            object-position: top;
+                height: 50px;
+                width: 50px;
+                vertical-align: middle; 
+                border-radius: 30%;
+        }
+         input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: whitesmoke;
+  padding: 20px;
+}
+#footerdiv {
+  height: 250px;
+  background-color: navy;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  position: inherit;
+        }
+        .media {
+            height: 40px;
+            width: 40px;
+        }
+        .avatar {
+        vertical-align: middle;
+        max-height: 50px;
+        max-width: 50px;
+        border-radius: 50%;
+}
+        a:hover{
+            cursor: pointer;
+        }
+    </style>
+</html>
