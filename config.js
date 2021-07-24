@@ -36,20 +36,10 @@
 
     const CC_USERS = [
       {
-        id: 112290,
-        login: "michaelzheng",
-        password: "michaelzhengisdumb"
-      },
-      {
         id: 112292,
         login: "amirmds",
         password: "12345678"
       },
-        {
-        id: 2830771,
-        login:"SoltoonDara",
-        password:"12345678"
-        },
         {
         id: 4605242,
         login:"avaesna",
